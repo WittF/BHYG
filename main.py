@@ -119,7 +119,6 @@ def main():
         version, sentry_sdk = init()
         session = requests.session()
 
-        check_update(version)
         check_policy()
 
         config = load_config()

@@ -85,48 +85,6 @@ def init():
     sentry_sdk.set_user({"hwid": machineid.id()[:16]})
     return version, sentry_sdk
 
-def check_update(version):
-    try:
-        import requests
-        data = requests.get("https://api.github.com/repos/biliticket/BHYG/releases/latest",
-                            headers={"Accept": "application/vnd.github+json"}).json()
-        if data["tag_name"] != version:
-
-            import platform
-            if platform.system() == "Windows":
-                name = "BHYG-Windows.exe"
-            elif platform.system() == "Linux":
-                name = "BHYG-Linux"
-            elif platform.system() == "Darwin":
-                print(platform.machine())
-                if "arm" in platform.machine():
-                    name = "BHYG-macOS-Apple_Silicon"
-                elif "64" in platform.machine():
-                    name = "BHYG-macOS-Intel"
-                else:
-                    name = "BHYG-macOS"
-            else:
-                name = "BHYG"
-            find = False
-            for distribution in data["assets"]:
-                if distribution["name"] == name:
-                    logger.warning(
-                        i18n_gt()["new_version_1"].format(data['tag_name'], distribution['browser_download_url'], distribution['size'] / 1024 / 1024))
-                    if data['body'] != "":
-                        logger.warning(i18n_gt()["new_version_notify"].format(data['body']))
-                    find = True
-                    break
-            if not find:
-                logger.warning(i18n_gt()["new_version_2"].format(data['tag_name'], data['html_url']))
-                if data['body'] != "":
-                    logger.warning(i18n_gt()["new_version_notify"].format(data['body']))
-                find = True
-    except KeyboardInterrupt:
-        logger.error(i18n_gt()["update_interrupted"])
-    except:
-        logger.error(i18n_gt()["update_interrupted"])
-
-
 class HygException(Exception):
     pass
 

@@ -70,6 +70,8 @@ def check_policy():
             break
         except Exception:
             logger.error(i18n_gt()["policy_error"])
+    if policy["announcement"] is not None:
+        logger.warning(policy["announcement"])
     if "policy" not in locals():
         logger.error(i18n_gt()["policy_get_failed"])
         sys.exit(1)
